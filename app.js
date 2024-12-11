@@ -3,11 +3,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const index = require("./routes/index.js");
+const auth = require("./routes/auth.js");
 
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:5173/"],
+  origin: ["http://localhost:5173"],
 
   // https://web.dev/articles/cross-origin-resource-sharing
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", index);
+app.use("/auth/", auth);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

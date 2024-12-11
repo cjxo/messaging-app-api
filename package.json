@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "node --watch app.js"
+    "dev": "node --watch app.js",
+    "populate": "node ./db/populate"
   },
   "keywords": [],
   "author": "",
@@ -15,11 +16,14 @@
     "supertest": "^7.0.0"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "install": "^0.13.0",
-    "npm": "^10.9.1"
+    "jsonwebtoken": "^9.0.2",
+    "npm": "^10.9.1",
+    "pg": "^8.13.1"
   }
-
 }
