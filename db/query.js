@@ -39,6 +39,16 @@ const user = {
     const { rows } = await pool.query(SQL, [username]);
     return rows[0];
   },
+
+  getFromId: async (id) => {
+    const SQL = `
+      SELECT * FROM m_user
+      WHERE id = $1;
+    `;
+
+    const { rows } = await pool.query(SQL, [id]);
+    return rows[0];
+  },
 };
 
 module.exports = {

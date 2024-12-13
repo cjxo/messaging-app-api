@@ -33,3 +33,7 @@ Given these things, we might need a database that has the following tables (roug
     - MessageContent
     - DateSent
     - IsRead
+
+TODO
+[ ] Auth Route Tests
+[ ] 15m epiry to 7d expiry once confident it works in front/back

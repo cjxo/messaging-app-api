@@ -89,8 +89,50 @@ const signIn = async (req, res, next) => {
   }
 };
 
+const signOut = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  })
+  .json({ message: "Sign Out Successful." });
+};
+
+const verifyJWTToken = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET_ACCESS);
+  } catch (err) {
+    return null;
+  }
+};
+
+const checkAuth = async (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized - no token provided." });
+  }
+
+  try {
+    const decoded = verifyJWTToken(token);
+    if (!decoded) {
+      return res.status(401).json({ message: "Unauthorized - invalid token." });
+    }
+
+    const user = await db.user.getFromId(decoded.userId);
+    if (!user) {
+      return res.status(400).json({ message: "User not found." });
+    }
+
+    res.json({ message: "Is Authenticated." });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   root,
   signUp,
-  signIn
+  signIn,
+  signOut,
+  checkAuth,
 };
