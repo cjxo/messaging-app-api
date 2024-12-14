@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const index = require("./routes/index.js");
 const auth = require("./routes/auth.js");
+const user = require("./routes/user.js");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", index);
 app.use("/auth/", auth);
+app.use("/user/", user);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

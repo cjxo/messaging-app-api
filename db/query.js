@@ -49,6 +49,30 @@ const user = {
     const { rows } = await pool.query(SQL, [id]);
     return rows[0];
   },
+
+  getAllUsersWhoIsNotId: async (id) => {
+    // Get all users in the system and return the following:
+    // 1. username
+    // 2. isAddedByUser
+    const SQL = `
+      SELECT
+        m_user.id,
+        username,
+        (CASE
+          WHEN (user_0 = $1) OR (user_1 = $1) THEN TRUE
+          ELSE FALSE
+        END)::BOOLEAN AS alreadyAdded
+      FROM
+        m_user
+      LEFT JOIN
+        m_user_friend
+        ON (m_user_friend.user_0 = m_user.id OR m_user_friend.user_1 = m_user.id)
+      WHERE m_user.id != $1;
+    `;
+
+    const { rows } = await pool.query(SQL, [id]);
+    return rows;
+  },
 };
 
 module.exports = {

@@ -98,27 +98,9 @@ const signOut = (req, res) => {
   .json({ message: "Sign Out Successful." });
 };
 
-const verifyJWTToken = (token) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET_ACCESS);
-  } catch (err) {
-    return null;
-  }
-};
-
 const checkAuth = async (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized - no token provided." });
-  }
-
   try {
-    const decoded = verifyJWTToken(token);
-    if (!decoded) {
-      return res.status(401).json({ message: "Unauthorized - invalid token." });
-    }
-
-    const user = await db.user.getFromId(decoded.userId);
+    const user = await db.user.getFromId(req.userId);
     if (!user) {
       return res.status(400).json({ message: "User not found." });
     }
