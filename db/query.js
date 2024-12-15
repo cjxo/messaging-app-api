@@ -75,6 +75,18 @@ const user = {
   },
 };
 
+const message = {
+  addUser: async (user0, user1) => {
+    const SQL = `
+      INSERT INTO m_user_friend (user_0, user_1)
+      VALUES ($1, $2);
+    `;
+
+    await pool.query(SQL, [user0, user1]);
+  },
+};
+
 module.exports = {
   user,
+  message,
 };
