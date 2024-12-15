@@ -84,6 +84,32 @@ const message = {
 
     await pool.query(SQL, [user0, user1]);
   },
+
+  getMessagedUsersFromID: async (userId) => {
+    // https://www.postgresql.org/docs/9.5/functions-aggregate.html
+    // SQL PROS, PLEASE DO NOT FLAME ME! 
+    const SQL = `
+      SELECT
+        m_user.id,
+        first_name,
+        last_name,
+        ARRAY_AGG(CASE WHEN m.sender_id = m_user.id THEN 'from' ELSE 'to' END) AS who,
+        ARRAY_AGG(message) AS messages
+      FROM m_message as m
+      JOIN m_user
+      ON 
+        m.sender_id = m_user.id OR m.reciever_id = m_user.id
+      WHERE
+        m_user.id != $1
+      GROUP BY 
+        m_user.id, first_name, last_name
+      ORDER BY
+        m_user.id;
+    `;
+
+    const { rows } = await pool.query(SQL, [userId]);
+    return rows;
+  },
 };
 
 module.exports = {

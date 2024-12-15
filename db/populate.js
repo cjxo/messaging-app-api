@@ -6,7 +6,7 @@ const pool = require("./pool.js");
 // https://www.postgresql.org/docs/current/functions-datetime.html
 // https://www.postgresql.org/docs/current/datatype-datetime.html
 const SQL = `
-  -- DROP TABLE IF EXISTS m_message;
+  DROP TABLE IF EXISTS m_message;
   -- DROP TABLE IF EXISTS m_user;
   CREATE TABLE IF NOT EXISTS m_user (
     id                INTEGER         PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -32,9 +32,21 @@ const SQL = `
     reciever_id       INTEGER         REFERENCES m_user (id),
     message           TEXT            NOT NULL,
     date_created      TIMESTAMPTZ     DEFAULT(TIMEZONE('utc', NOW())),
+    is_read           BOOLEAN         DEFAULT FALSE,
+    CHECK (sender_id != reciever_id)
+  ); 
+`;
+
+/*
+ * CREATE TABLE IF NOT EXISTS m_message (
+    id                INTEGER         PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_friend_id    INTEGER         REFERENCES m_user_friend (id),
+    sender_id         INTEGER         REFERENCES m_user (id),
+    message           TEXT            NOT NULL,
+    date_created      TIMESTAMPTZ     DEFAULT(TIMEZONE('utc', NOW())),
     is_read           BOOLEAN         DEFAULT FALSE
   );
-`;
+*/
 
 const main = async () => {
   const client = await pool.connect();

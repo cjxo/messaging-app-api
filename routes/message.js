@@ -5,5 +5,6 @@ const messageRouter = express.Router();
 
 messageRouter.get("/", message.root);
 messageRouter.post("/add-user", verifyToken, message.addUser);
+messageRouter.get("/get-all", verifyToken, message.getAll);
 
 module.exports = messageRouter;

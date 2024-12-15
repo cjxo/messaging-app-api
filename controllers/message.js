@@ -21,7 +21,22 @@ const addUser = async (req, res, next) => {
   }
 };
 
+const getAll = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const result = await db.message.getMessagedUsersFromID(userId);
+
+    res.json({
+      message: "Request Granted.",
+      users: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   root,
   addUser,
+  getAll,
 };
