@@ -98,7 +98,8 @@ const message = {
       FROM m_message as m
       JOIN m_user
       ON 
-        m.sender_id = m_user.id OR m.reciever_id = m_user.id
+        (m.sender_id = m_user.id OR m.reciever_id = m_user.id) AND
+        (m.sender_id = $1 OR m.reciever_id = $1)
       WHERE
         m_user.id != $1
       GROUP BY 
