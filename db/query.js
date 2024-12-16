@@ -139,6 +139,16 @@ const message = {
     const { rows } = await pool.query(SQL, [userId]);
     return rows;
   },
+
+  insert: async (sender, reciever, message) => {
+    const SQL = `
+      INSERT INTO m_message (sender_id, reciever_id, message)
+      VALUES ($1, $2, $3);
+    `;
+
+    await pool.query(SQL, [sender, reciever, message]);
+
+  },
 };
 
 module.exports = {

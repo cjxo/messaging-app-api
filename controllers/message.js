@@ -35,8 +35,24 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const sendTo = async (req, res, next) => {
+  try {
+    const toSendToId = req.body.sendToUserId;
+    const userId = req.userId;
+
+    await db.message.insert(userId, toSendToId, req.body.message);
+
+    res.json({
+      message: "Sent."
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   root,
   addUser,
   getAll,
+  sendTo,
 };
