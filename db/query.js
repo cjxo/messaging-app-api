@@ -1,25 +1,28 @@
 const pool = require("./pool");
 
+const usernameIsUnique = async (username) => {
+  const SQL = `
+    SELECT username FROM m_user
+    WHERE $1 = username;
+  `;
+
+  const { rows } = await pool.query(SQL, [username]);
+  return rows.length === 0;
+};
+
+const emailIsUnique = async (email) => {
+  const SQL = `
+    SELECT email FROM m_user
+    WHERE email = $1;
+  `;
+
+  const { rows } = await pool.query(SQL, [email]);
+  return rows.length === 0;
+};
+
 const user = {
-  usernameIsUnique: async (username) => {
-    const SQL = `
-      SELECT username FROM m_user
-      WHERE $1 = username;
-    `;
-
-    const { rows } = await pool.query(SQL, [username]);
-    return rows.length === 0;
-  },
-
-  emailIsUnique: async (email) => {
-    const SQL = `
-      SELECT email FROM m_user
-      WHERE email = $1;
-    `;
-
-    const { rows } = await pool.query(SQL, [email]);
-    return rows.length === 0;
-  },
+  usernameIsUnique,
+  emailIsUnique,
 
   insert: async (firstName, lastName, username, email, hashedPassword) => {
     const SQL = `
@@ -73,6 +76,58 @@ const user = {
 
     const { rows } = await pool.query(SQL, [id]);
     return rows;
+  },
+
+  tryUpdateUsername: async (id, value) => {
+    const unique = await usernameIsUnique(value);
+    if (unique) {
+      const SQL = `
+        UPDATE m_user
+        SET username = $2
+        WHERE id = $1;
+      `;
+
+      await pool.query(SQL, [id, value]);
+      return "";
+    } else {
+      return "Username already taken.";
+    }
+  },
+
+  updateFirstName: async (id, value) => {
+    const SQL = `
+      UPDATE m_user
+      SET firstName = $2
+      WHERE id = $1;
+    `;
+
+    await pool.query(SQL, [id, value]);
+  },
+
+  updateLastName: async (id, value) => {
+    const SQL = `
+      UPDATE m_user
+      SET lastName = $2
+      WHERE id = $1;
+    `;
+
+    await pool.query(SQL, [id, value]);
+  },
+
+  tryUpdateEmail: async (id, value) => {
+    const unique = await emailIsUnique(value);
+    if (unique) {
+      const SQL = `
+        UPDATE m_user
+        SET email = $2
+        WHERE id = $1;
+      `;
+
+      await pool.query(SQL, [id, value]);
+      return "";
+    } else {
+      return "Email is already being used.";
+    }
   },
 };
 
