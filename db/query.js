@@ -88,6 +88,8 @@ const message = {
   getMessagedUsersFromID: async (userId) => {
     // https://www.postgresql.org/docs/9.5/functions-aggregate.html
     // SQL PROS, PLEASE DO NOT FLAME ME! 
+
+    /*
     const SQL = `
       SELECT
         m_user.id,
@@ -106,7 +108,33 @@ const message = {
         m_user.id, first_name, last_name
       ORDER BY
         m_user.id;
-    `;
+    `;*/
+
+    // MY GOSH I NEED TO PRACTICE SQLLLL!!!!!!!!
+    const SQL = `
+      SELECT
+        m_user.id,
+        first_name,
+        last_name,
+        ARRAY_AGG(CASE WHEN m.sender_id = m_user.id THEN 'from' ELSE 'to' END) AS who,
+        ARRAY_AGG(message) AS messages
+      FROM 
+          m_user_friend uf
+      JOIN 
+          m_user
+          ON m_user.id = uf.user_0 OR m_user.id = uf.user_1
+      LEFT JOIN 
+          m_message m
+          ON (m.sender_id = uf.user_0 AND m.reciever_id = uf.user_1) 
+          OR (m.sender_id = uf.user_1 AND m.reciever_id = uf.user_0)
+      WHERE
+          (uf.user_0 = $1 OR uf.user_1 = $1)
+          AND m_user.id != $1
+      GROUP BY 
+          m_user.id, first_name, last_name
+      ORDER BY
+          m_user.id;
+    `
 
     const { rows } = await pool.query(SQL, [userId]);
     return rows;
