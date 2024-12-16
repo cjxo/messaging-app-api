@@ -64,7 +64,7 @@ const signIn = async (req, res, next) => {
       res
         .status(403)
         .json({
-          message: "Passwords do not match.",
+          message: "Wrong password",
         });
 
       return;

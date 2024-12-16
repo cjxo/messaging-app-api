@@ -66,7 +66,8 @@ const user = {
         m_user
       LEFT JOIN
         m_user_friend
-        ON (m_user_friend.user_0 = m_user.id OR m_user_friend.user_1 = m_user.id)
+        ON (m_user_friend.user_0 = m_user.id OR m_user_friend.user_1 = m_user.id) AND
+        (m_user_friend.user_0 = $1 OR m_user_friend.user_1 = $1)
       WHERE m_user.id != $1;
     `;
 
