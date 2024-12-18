@@ -18,7 +18,7 @@ const getProfile = async (req, res, next) => {
 const getAll = async (req, res, next) => {
   try {
     const users = await db.user.getAllUsersWhoIsNotId(req.userId);
-    console.log(users);
+    res.json({ message: "Request Granted.", users });
   } catch (err) {
     next(err);
   }
